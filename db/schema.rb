@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_22_155334) do
+ActiveRecord::Schema.define(version: 2018_06_23_162359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,14 @@ ActiveRecord::Schema.define(version: 2018_06_22_155334) do
     t.integer "neutral_ratio"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "start_phase"
+  end
+
+  create_table "game_types_phases", id: false, force: :cascade do |t|
+    t.bigint "game_type_id", null: false
+    t.bigint "phase_id", null: false
+    t.index ["game_type_id", "phase_id"], name: "index_game_types_phases_on_game_type_id_and_phase_id"
+    t.index ["phase_id", "game_type_id"], name: "index_game_types_phases_on_phase_id_and_game_type_id"
   end
 
   create_table "game_types_roles", id: false, force: :cascade do |t|
@@ -63,6 +71,8 @@ ActiveRecord::Schema.define(version: 2018_06_22_155334) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "time"
+    t.integer "sequence"
   end
 
   create_table "powers", force: :cascade do |t|
@@ -82,6 +92,13 @@ ActiveRecord::Schema.define(version: 2018_06_22_155334) do
     t.index ["role_id", "power_id"], name: "index_powers_roles_on_role_id_and_power_id"
   end
 
+  create_table "powers_targets", id: false, force: :cascade do |t|
+    t.bigint "power_id", null: false
+    t.bigint "role_id", null: false
+    t.index ["power_id", "role_id"], name: "index_powers_targets_on_power_id_and_role_id"
+    t.index ["role_id", "power_id"], name: "index_powers_targets_on_role_id_and_power_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.integer "side_id"
@@ -89,10 +106,25 @@ ActiveRecord::Schema.define(version: 2018_06_22_155334) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "roles_for_game_types", id: false, force: :cascade do |t|
+    t.bigint "role_id", null: false
+    t.bigint "game_type_id", null: false
+    t.integer "max_num_of_role_type"
+    t.index ["game_type_id", "role_id"], name: "index_roles_for_game_types_on_game_type_id_and_role_id"
+    t.index ["role_id", "game_type_id"], name: "index_roles_for_game_types_on_role_id_and_game_type_id"
+  end
+
   create_table "sides", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "targets", id: false, force: :cascade do |t|
+    t.bigint "power_id", null: false
+    t.bigint "role_id", null: false
+    t.index ["power_id", "role_id"], name: "index_targets_on_power_id_and_role_id"
+    t.index ["role_id", "power_id"], name: "index_targets_on_role_id_and_power_id"
   end
 
   create_table "users", force: :cascade do |t|

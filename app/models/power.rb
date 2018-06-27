@@ -1,2 +1,0 @@
-class Power < ApplicationRecord
-end
